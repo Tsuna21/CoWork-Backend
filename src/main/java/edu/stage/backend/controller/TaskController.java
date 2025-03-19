@@ -25,12 +25,13 @@ public class TaskController {
 
     @GetMapping
     @PreAuthorize("hasRole('USER')")
-    public List<Task> getAllTasks() {
-        return taskService.getAllTasks();
+    public ResponseEntity<List<Task>> getAllTasks() {
+        List<Task> tasks = taskService.getAllTasks();
+        return ResponseEntity.ok(tasks);
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Task> createTask(@Valid @RequestBody Task task) {
     System.out.println("🔒 Vérification des droits : " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
     Task savedTask = taskService.createTask(task);
@@ -59,6 +60,7 @@ public class TaskController {
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<Task> updateTask(@PathVariable Long id, @Valid @RequestBody Task updatedTask) {
+        System.out.println("🔒 Vérification des droits : " + SecurityContextHolder.getContext().getAuthentication().getAuthorities());
         return taskService.updateTask(id, updatedTask)
             .map(ResponseEntity::ok)
             .orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());

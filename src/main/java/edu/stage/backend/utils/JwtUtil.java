@@ -1,12 +1,14 @@
 package edu.stage.backend.utils;
 
 import io.jsonwebtoken.*;
+import jakarta.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 
 import javax.crypto.spec.SecretKeySpec;
+
 import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
@@ -118,10 +120,25 @@ public class JwtUtil {
     }
 
     private Key getSigningKey() {
-        byte[] keyBytes = Base64.getDecoder().decode(secret);
-        if (keyBytes.length < 32) {
-            throw new IllegalArgumentException("La clé secrète doit avoir une longueur d'au moins 256 bits (32 caractères en Base64).");
+        try {
+            byte[] keyBytes = Base64.getDecoder().decode(secret);
+            System.out.println("✅ Clé Base64 décodée avec succès ! Taille : " + keyBytes.length);
+            return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("🚨 ERREUR : La clé JWT fournie dans application.properties n'est pas en Base64. " +
+                                       "Utilise `openssl rand -base64 32 | tr -d '=' | tr '/+' '_-'` pour en générer une.");
         }
-        return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS256.getJcaName());
+    }   
+
+    @PostConstruct
+    public void testSecretKey() {
+        System.out.println("🔍 Clé secrète utilisée : [" + secret + "]");
+        try {
+            byte[] decodedKey = Base64.getDecoder().decode(secret);
+            System.out.println("✅ Clé Base64 décodée avec succès ! Taille : " + decodedKey.length);
+        } catch (IllegalArgumentException e) {
+            System.out.println("❌ ERREUR : La clé n'est pas en Base64 !");
+        }
     }
+
 }
