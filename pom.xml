@@ -50,6 +50,13 @@
     		<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
 
+		<dependency>
+    		<groupId>org.springdoc</groupId>
+    		<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+    		<version>2.0.2</version> <!-- Vérifie la dernière version si besoin -->
+		</dependency>
+
+
 
         <!-- JWT Dependencies -->
         <dependency>
@@ -91,6 +98,13 @@
     		<version>1.18.30</version>
     		<scope>provided</scope>
 		</dependency>
+
+		<!-- Mockito pour simuler les dépendances -->
+    	<dependency>
+        	<groupId>org.mockito</groupId>
+        	<artifactId>mockito-core</artifactId>
+        	<scope>test</scope>
+    	</dependency>
     </dependencies>
 
 	<build>
