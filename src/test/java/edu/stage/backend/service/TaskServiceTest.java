@@ -1,6 +1,7 @@
 package edu.stage.backend.service;
 
 import edu.stage.backend.model.Task;
+import edu.stage.backend.model.User;
 import edu.stage.backend.model.Priority;
 import edu.stage.backend.repository.TaskRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -32,10 +33,16 @@ class TaskServiceTest {
     private Task task1;
     private Task task2;
 
+    private User mockUser;
+
     @BeforeEach
     void setUp() {
-        task1 = new Task(1L, "Task 1", "Description 1", Priority.HIGH);
-        task2 = new Task(2L, "Task 2", "Description 2", Priority.LOW);
+        User mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setEmail("test@example.com");
+        mockUser.setPassword("password123");
+        task1 = new Task(1L, "Task 1", "Description 1", Priority.HIGH, mockUser);
+        task2 = new Task(2L, "Task 2", "Description 2", Priority.LOW, mockUser);
     }
 
     @Test
@@ -82,7 +89,7 @@ class TaskServiceTest {
     @Test
     void testSaveTask_ReturnsSavedTask() {
         // Arrange
-        Task newTask = new Task(null, "New Task", "New Description", Priority.MEDIUM);
+        Task newTask = new Task(null, "New Task", "New Description", Priority.MEDIUM, mockUser);
         when(taskRepository.save(any(Task.class))).thenReturn(newTask);
 
         // Act
@@ -113,7 +120,7 @@ class TaskServiceTest {
     void testCreateTask_SavesTaskSuccessfully() {
         // Arrange
         Task taskToSave = new Task();
-        Task savedTask = new Task(1L, "Nouvelle tâche", "Description de la tâche", Priority.MEDIUM);
+        Task savedTask = new Task(1L, "Nouvelle tâche", "Description de la tâche", Priority.MEDIUM, mockUser);
 
         when(taskRepository.save(taskToSave)).thenReturn(savedTask);
 
@@ -135,9 +142,9 @@ class TaskServiceTest {
     void testUpdateTask_UpdatesSuccessfully() {
         // Arrange
         Long taskId = 1L;
-        Task existingTask = new Task(taskId, "Ancien Titre", "Ancienne Description", Priority.LOW);
-        Task updatedTaskDetails = new Task(taskId, "Nouveau Titre", "Nouvelle Description", Priority.HIGH);
-        Task updatedTask = new Task(taskId, "Nouveau Titre", "Nouvelle Description", Priority.HIGH);
+        Task existingTask = new Task(taskId, "Ancien Titre", "Ancienne Description", Priority.LOW, mockUser);
+        Task updatedTaskDetails = new Task(taskId, "Nouveau Titre", "Nouvelle Description", Priority.HIGH, mockUser);
+        Task updatedTask = new Task(taskId, "Nouveau Titre", "Nouvelle Description", Priority.HIGH, mockUser);
 
         when(taskRepository.findById(taskId)).thenReturn(Optional.of(existingTask));
         when(taskRepository.save(any(Task.class))).thenReturn(updatedTask);

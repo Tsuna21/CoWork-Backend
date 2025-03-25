@@ -2,6 +2,7 @@ package edu.stage.backend.controller;
 
 import edu.stage.backend.service.TaskService;
 import edu.stage.backend.model.Task;
+import edu.stage.backend.model.User;
 import edu.stage.backend.model.Priority;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,10 +37,18 @@ class TaskControllerTest {
     private Task task1;
     private Task task2;
 
+    private User mockUser;
+
+    
+
     @BeforeEach
     void setUp() {
-        task1 = new Task(1L, "Task 1", "Description 1", Priority.HIGH);
-        task2 = new Task(2L, "Task 2", "Description 2", Priority.LOW);
+        User mockUser = new User();
+        mockUser.setId(1L);
+        mockUser.setEmail("test@example.com");
+        mockUser.setPassword("password123");
+        task1 = new Task(1L, "Task 1", "Description 1", Priority.HIGH, mockUser);
+        task2 = new Task(2L, "Task 2", "Description 2", Priority.LOW, mockUser);
     }
 
     @Test
@@ -86,8 +95,8 @@ class TaskControllerTest {
     @Test
     void testCreateTask_ReturnsCreatedTask() {
         // Arrange
-        Task newTask = new Task(null, "New Task", "New Description", Priority.MEDIUM);
-        Task savedTask = new Task(1L, "New Task", "New Description", Priority.MEDIUM);
+        Task newTask = new Task(null, "New Task", "New Description", Priority.MEDIUM, mockUser);
+        Task savedTask = new Task(1L, "New Task", "New Description", Priority.MEDIUM, mockUser);
         when(taskService.createTask(any(Task.class))).thenReturn(savedTask);
         
         SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken("user", "password", List.of(new SimpleGrantedAuthority("ROLE_USER"))));

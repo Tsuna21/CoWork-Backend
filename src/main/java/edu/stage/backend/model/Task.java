@@ -9,7 +9,6 @@ import jakarta.validation.constraints.Size;
 @Table(name = "tasks")
 @Data
 @NoArgsConstructor
-@AllArgsConstructor
 public class Task {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,4 +24,18 @@ public class Task {
 
     @Enumerated(EnumType.STRING)
     private Priority priority;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Task(Long id, String title, String description, Priority priority, User user) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+        this.user = user;
+    }
+    
+
 }
